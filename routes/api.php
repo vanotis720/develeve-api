@@ -1,7 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +17,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/signup', [AuthController::class, 'register']);
+Route::post('/signin', [AuthController::class, 'login']);
+
+Route::apiResource('/posts', PostController::class);
+Route::apiResource('/categories', CategoryController::class);
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/me', [AuthController::class, 'profile']);
+    Route::apiResource('/comments', CommentController::class);
+
 });

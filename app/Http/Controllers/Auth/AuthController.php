@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Validator;
@@ -42,7 +40,7 @@ class AuthController extends ApiController
         return $this->errorResponse('error on registration', 500);
     }
 
-    public function login(Request $request, $role = 'user')
+    public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
@@ -53,7 +51,7 @@ class AuthController extends ApiController
             return $this->errorResponse($validator->getMessageBag(), 422);
         }
 
-        $credentials = ['email' => $request->email, 'password ' => $request->password];
+        $credentials = ['email' => $request->email, 'password' => $request->password];
 
         if (Auth::attempt($credentials)) {
             $user = User::find(auth()->user()->id);
@@ -69,7 +67,7 @@ class AuthController extends ApiController
         return User::find(auth()->user()->id);
     }
 
-    public function getUser()
+    public function profile()
     {
         return $this->successResponse($this->getAuthUser());
     }
